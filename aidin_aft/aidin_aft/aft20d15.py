@@ -7,7 +7,17 @@ class AFT20D15:
     def __init__(self, mode) -> None:
         if mode == "usb":
             self.dev = usb.core.find(idVendor=0x1D50, idProduct=0x606F)
-            self.bus = can.Bus(interface="gs_usb", channel=self.dev.product, bus=self.dev.bus, address=self.dev.address, bitrate=1000000)  # sensor is running on 1000kbps
+            self.bus = can.Bus(interface="gs_usb",
+                               channel=self.dev.product,
+                               bus=self.dev.bus,
+                               address=self.dev.address,
+                               bitrate=1000000)  # sensor is running on 1000kbps
+        if mode == "robotell":
+            self.bus = can.Bus(interface="robotell",
+                               channel="/dev/ttyUSB1@115200",
+                               rtscts=True,
+                               bitrate=1000000)
+
         if mode == "socket":
             self.bus = can.Bus(channel="can0", interface="socketcan")
 
@@ -56,29 +66,28 @@ class AFT20D15:
 
 
 if __name__ == "__main__":
-    import numpy as np
-    sensor = AFT20D15(mode="socket")
+    sensor = AFT20D15(mode="robotell")
 
-    # try:
-    #     print("Start receiving messages")
-    #     while True:
-    #         ft = sensor.receive()
-    #         print(f"> ft: {ft}")
-    # except KeyboardInterrupt:
-    #     sensor.shutdown()
-    #     print("Stopped script")
+    try:
+        print("Start receiving messages")
+        while True:
+            ft = sensor.receive()
+            print(f"> ft: {ft}")
+    except KeyboardInterrupt:
+        sensor.shutdown()
+        print("Stopped script")
 
     # for _ in range(2):
     #     data = sensor.bus.recv(1)
     #     print(f"> data: {data}")
-    #     dataarry = np.array(data.data, dtype=np.uint)
-    #     print(f"> dataarry: {dataarry}")
-    #     dout = np.array(sensor.byte_to_output(dataarry))
-    #     print(f"> dout: {dout}")
-    #     force = dout/1000 -30
-    #     print(f"> force: {force}")
 
-    #     torque = dout/100000 - 0.3
-    #     print(f"> torque: {torque}")
+    #     # dataarry = np.array(data.data, dtype=np.uint)
+    #     # print(f"> dataarry: {dataarry}")
+    #     # dout = np.array(sensor.byte_to_output(dataarry))
+    #     # print(f"> dout: {dout}")
+    #     # force = dout/1000 -30
+    #     # print(f"> force: {force}")
+    #     # torque = dout/100000 - 0.3
+    #     # print(f"> torque: {torque}")
 
     # sensor.shutdown()

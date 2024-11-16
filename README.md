@@ -9,6 +9,11 @@ pip install "python-can[gs_usb]"
 ## Setup
 TODO
 
+## Permission
+```bash
+sudo chmod 666 /dev/ttyUSB1
+```
+
 ## Open communication
 - Attach canbus ```sudo ip link set dev can0 up type can bitrate 1000000```
 - Listen to canbus ```candump can0```
@@ -21,3 +26,8 @@ ros2 launch aidin_aft aft_bringup.launch.py
 ```
 
 ## Reference [List](./doc/)
+
+## Useful command
+
+- USB detail `/bin/udevadm info --name=/dev/ttyUSB1`
+- USB port `ls -l /dev/serial/by-id/`
